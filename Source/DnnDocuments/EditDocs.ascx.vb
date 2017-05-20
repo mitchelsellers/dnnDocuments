@@ -480,6 +480,7 @@ Namespace DotNetNuke.Modules.Documents
                     objDocument.Url = ctlUrl.Url
                     objDocument.Description = txtDescription.Text
                     objDocument.ForceDownload = chkForceDownload.Checked
+                    objDocument.ModifiedByUserId = UserInfo.UserID
 
                     If lstOwner.Visible Then
                         If lstOwner.SelectedValue <> String.Empty Then

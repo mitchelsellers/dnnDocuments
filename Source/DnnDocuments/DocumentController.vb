@@ -73,7 +73,7 @@ Namespace DotNetNuke.Modules.Documents
     End Function
 
     Public Sub UpdateDocument(ByVal objDocument As DocumentInfo)
-            DataProvider.Instance().UpdateDocument(objDocument.ModuleId, objDocument.ItemId, objDocument.Title, objDocument.Url, objDocument.CreatedByUserId, objDocument.OwnedByUserId, objDocument.Category, objDocument.SortOrderIndex, objDocument.Description, objDocument.ForceDownload)
+            DataProvider.Instance().UpdateDocument(objDocument.ModuleId, objDocument.ItemId, objDocument.Title, objDocument.Url, objDocument.ModifiedByUserId, objDocument.OwnedByUserId, objDocument.Category, objDocument.SortOrderIndex, objDocument.Description, objDocument.ForceDownload)
     End Sub
 
     Public Sub AddDocumentsSettings(ByVal objDocumentsSettings As DocumentsSettingsInfo)
