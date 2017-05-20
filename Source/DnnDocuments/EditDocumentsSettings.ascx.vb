@@ -21,6 +21,7 @@
 Imports System.IO
 Imports System.Web
 Imports DotNetNuke.Modules.Documents.DocumentController
+Imports DotNetNuke.Services.FileSystem
 
 Namespace DotNetNuke.Modules.Documents
 
@@ -161,8 +162,8 @@ Namespace DotNetNuke.Modules.Documents
 
         Sub LoadFolders()
             cboDefaultFolder.Items.Clear()
-
-            For Each objFolder As DotNetNuke.Services.FileSystem.FolderInfo In FileSystemUtils.GetFoldersByUser(PortalId, True, True, "READ, WRITE")
+            
+            For Each objFolder As DotNetNuke.Services.FileSystem.FolderInfo In FolderManager.Instance.GetFolders(PortalId, "READ, WRITE", UserId)
                 Dim FolderItem As New Web.UI.WebControls.ListItem
 
                 If objFolder.FolderPath = Null.NullString Then

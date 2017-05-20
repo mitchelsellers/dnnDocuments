@@ -19,6 +19,7 @@
 '
 Imports DotNetNuke
 Imports System.Web.UI.WebControls
+Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Services.FileSystem
 
 Namespace DotNetNuke.Modules.Documents
@@ -306,7 +307,7 @@ Namespace DotNetNuke.Modules.Documents
             If IsReadComplete Then Exit Sub
 
             ' Only read from the cache if the users is not logged in
-            strCacheKey = Me.CacheKey & ";anon-doclist"
+            strCacheKey = TabModuleId & "dnnDocs;anon-doclist"
             If Not Request.IsAuthenticated Then
                 mobjDocumentList = CType(DataCache.GetCache(strCacheKey), ArrayList)
             End If
@@ -322,9 +323,8 @@ Namespace DotNetNuke.Modules.Documents
                 For intCount = mobjDocumentList.Count - 1 To 0 Step -1
                     objDocument = CType(mobjDocumentList(intCount), DocumentInfo)
                     If objDocument.Url.ToLower.IndexOf("fileid=") >= 0 Then
-                        ' document is a file, check security
-                        Dim objFiles As New FileController
-                        Dim objFile As DotNetNuke.Services.FileSystem.FileInfo = objFiles.GetFileById(Integer.Parse(objDocument.Url.Split(Char.Parse("="))(1)), PortalId)
+                        ' document is a file, check security\
+                        Dim objFile As IFileInfo = FileManager.Instance.GetFile(Integer.Parse(objDocument.Url.Split(Char.Parse("="))(1)))
 
                         If Not objFile Is Nothing AndAlso Not DotNetNuke.Security.PortalSecurity.IsInRoles(FileSystemUtils.GetRoles(objFile.Folder, PortalSettings.PortalId, "READ")) Then
                             ' remove document from the list

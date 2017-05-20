@@ -112,7 +112,7 @@ Namespace DotNetNuke.Modules.Documents
 
                         ' Populate categories list
                         With New DotNetNuke.Common.Lists.ListController
-                            lstCategory.DataSource = .GetListEntryInfoCollection(objDocumentsSettings.CategoriesListName)
+                            lstCategory.DataSource = .GetListEntryInfoItems(objDocumentsSettings.CategoriesListName)
                             lstCategory.DataTextField = "Text"
                             lstCategory.DataValueField = "Value"
 
