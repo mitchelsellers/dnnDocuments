@@ -1,0 +1,10 @@
+install\module\Documents_03.01.06_Install.resources
+install\module\Documents_04.01.00_Install.resources
+bin\DotNetNuke.Modules.Documents.SqlDataProvider.dll
+DesktopModules\Documents\Providers\DataProviders\SQLDataProvider\DotNetNuke.Documents.SqlDataProvider.vbproj
+DesktopModules\Documents\Providers\DataProviders\SQLDataProvider\AssemblyInfo.vb
+DesktopModules\Documents\Documents_03.01.02_ReleaseNotes.txt
+DesktopModules\Documents\Documents_03.01.03_ReleaseNotes.txt
+DesktopModules\Documents\Documents_03.01.04_ReleaseNotes.txt
+DesktopModules\Documents\Documents_03.01.05_ReleaseNotes.txt
+DesktopModules\Documents\Documents_04.00.00_ReleaseNotes.txt

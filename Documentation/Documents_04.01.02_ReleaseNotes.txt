@@ -1,0 +1,16 @@
+
+Version 4.1.2 of the core Documents module.
+This version requires Visual Studio 2010 for development (compiling against 2.0 framework) and also DotNetNuke core 4.6.2 or greater. 
+
+This release corrects the following changes:
+
+Corrected a problems related to the URL control and non-existant files (primary reason for release). 
+Fixed bugs found in release candidate 4.1.1 release packaging (which then created errors exposed in the user interface).
+Deleted legacy files.
+Upgraded module to Visual Studio 2010 for development.
+Added Documentation folder.
+Finished proper conversion to WAP for vs 2010.
+Removed usage of legacy connection string.
+Updated copyright.
+Putting source under CodePlex source control as of this release.
+Updated build file to work with 64 bit file system (and newer versions of nAnt).

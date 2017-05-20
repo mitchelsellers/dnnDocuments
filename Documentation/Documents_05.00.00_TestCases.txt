@@ -1,0 +1,14 @@
+﻿---------------------------------------------------------------------------------------
+
+  DNN Documents Module
+
+  Test Cases: Version 05.00.00
+
+----------------------------------------------------------------------------------------
+
+Upgrade Validation Test
+
+* Start with install of 04.01.02
+* Observe documented errors on document update and settings
+* Install 05.00.00
+* Module should now function properly

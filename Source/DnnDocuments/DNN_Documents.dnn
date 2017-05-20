@@ -1,0 +1,166 @@
+<dotnetnuke type="Package" version="5.0">
+  <packages>
+    <package name="DNN_Documents" type="Module" version="06.01.00">
+      <friendlyName>Documents</friendlyName>
+      <description>This module renders a list of documents, including links to browse or download the document. 
+        Documents includes an edit page, which allows authorized users to edit the information about the Documents 
+        (for example, a friendly title) stored in the SQL database.
+      </description>
+      <owner>
+        <name>Mitchel Sellers</name>
+        <organization>DotNetNuke Community</organization>
+        <url>http://dnndocuments.dotnetnuke.com</url>
+        <email>msellers@iowacomputergurus.com</email>
+      </owner>
+      <license>
+        <![CDATA[
+            <p>
+                DotNetNuke® - http://www.dotnetnuke.com <br />
+                Copyright (c) 2002-2013 by DotNetNuke Corporation</p>
+
+            <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+             documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+             the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and 
+             to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+            <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions 
+             of the Software.</p>
+
+            <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+             TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+             THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+             CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+             DEALINGS IN THE SOFTWARE.</p>
+        
+        ]]>
+      </license>
+      <releaseNotes>
+        <![CDATA[ 
+          <h3>Version 06.00.01</h3>
+          <p>This release fixed a packaging issue with the SQL Scripts for users upgrading from 05.x</p>
+        
+          <h3>Version 06.00.00</h3>
+          <p><strong>NOTE:</strong> If Upgrading from versions PRIOR to 05.00.00 upgrade to 05.00.00 FIRST!</p>
+          
+          <ul>
+            <li>21437/22277 - Resolved issues with DNN 6.x and later Form Patterns</li>
+            <li>24341 - Support For DotNetNuke 7.1 on Clean Installation</li>
+            <li>21461 - Improved DotNetNuke Core Integration by allowing document description to be searchable</li>
+            <li>21186 - Default Folder selection</li>
+            <li>20471 - Display issues when using Category List ***</li>
+            <li>23018 - Added option to allow "Force Download" to be set</li>
+            <li>23016 - Support for Azure</li>
+            <li>21588 - Resolved issues with non-english languages and custom CSS Classes</li>
+          </ul>
+          
+          <p>*** Please see release notes on CodePlex for needed steps for legacy resolution of this issue.</p>
+          
+          <h3>Version 05.00.00</h3>
+          
+          <ul>
+              <li>Updated to DNN 5.x manifest format</li>
+              <li>Added clustered primary key on Documents tabl</li>
+              <li>Resolved issues created by previous releases</li>
+              <li>Resolved outstanding bugs</li>
+          </ul>
+        
+        ]]>
+      </releaseNotes>
+      <dependencies>
+        <dependency type="CoreVersion">06.00.02</dependency>
+      </dependencies>
+      <components>
+        <component type="Script">
+          <scripts>
+            <basePath>DesktopModules\Documents</basePath>
+            <script type="Install">
+              <path>Providers\DataProviders\SQLDataProvider</path>
+              <name>install.06.00.00.SqlDataProvider</name>
+              <version>06.00.00</version>
+            </script>
+            <script type="Install">
+              <path>Providers\DataProviders\SQLDataProvider</path>
+              <name>06.00.00.SqlDataProvider</name>
+              <version>06.00.00</version>
+            </script>
+            <script type="UnInstall">
+              <path>Providers\DataProviders\SQLDataProvider</path>
+              <name>Uninstall.SqlDataProvider</name>
+              <version>06.00.00</version>
+            </script>
+          </scripts>
+        </component>
+
+        <component type="ResourceFile">
+          <resourceFiles>
+            <basePath>DesktopModules/Documents</basePath>
+            <resourceFile>
+              <name>Resources.zip</name>
+            </resourceFile>
+          </resourceFiles>
+        </component>
+
+        <component type="Module">
+          <desktopModule>
+            <moduleName>DNN_Documents</moduleName>
+            <foldername>Documents</foldername>
+            <businessControllerClass>DotNetNuke.Modules.Documents.DocumentController, DotNetNuke.Modules.Documents</businessControllerClass>
+            <supportedFeatures>
+              <supportedFeature type="Portable" />
+              <supportedFeature type="Searchable" />
+            </supportedFeatures>
+            <moduleDefinitions>
+              <moduleDefinition>
+                <friendlyName>Documents</friendlyName>
+                <defaultCacheTime>0</defaultCacheTime>
+                <moduleControls>
+                  <moduleControl>
+                    <controlKey />
+                    <controlSrc>DesktopModules/Documents/Document.ascx</controlSrc>
+                    <supportsPartialRendering>False</supportsPartialRendering>
+                    <controlTitle />
+                    <controlType>View</controlType>
+                    <iconFile />
+                    <helpUrl></helpUrl>
+                    <viewOrder>0</viewOrder>
+                  </moduleControl>
+                  <moduleControl>
+                    <controlKey>Edit</controlKey>
+                    <controlSrc>DesktopModules/Documents/EditDocs.ascx</controlSrc>
+                    <supportsPartialRendering>False</supportsPartialRendering>
+                    <controlTitle>Edit Documents</controlTitle>
+                    <controlType>Edit</controlType>
+                    <iconFile />
+                    <helpUrl></helpUrl>
+                    <viewOrder>0</viewOrder>
+                  </moduleControl>
+                  <moduleControl>
+                    <controlKey>Settings</controlKey>
+                    <controlSrc>DesktopModules/Documents/EditDocumentsSettings.ascx</controlSrc>
+                    <supportsPartialRendering>False</supportsPartialRendering>
+                    <controlTitle>Documents Settings</controlTitle>
+                    <controlType>Edit</controlType>
+                    <iconFile />
+                    <helpUrl></helpUrl>
+                    <viewOrder>0</viewOrder>
+                  </moduleControl>
+                </moduleControls>
+              </moduleDefinition>
+            </moduleDefinitions>
+          </desktopModule>
+        </component>
+        
+        <component type="Assembly">
+          <assemblies>
+            <basePath>bin</basePath>
+            <assembly>
+              <path>bin</path>
+              <name>DotNetNuke.Modules.Documents.dll</name>
+            </assembly>
+          </assemblies>
+        </component>
+
+      </components>
+    </package>
+  </packages>
+</dotnetnuke>
