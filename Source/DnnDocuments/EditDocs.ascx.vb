@@ -202,7 +202,7 @@ Namespace DotNetNuke.Modules.Documents
                         ctlTracking.Visible = False
 
                         ' Set default folder
-                        ctlUrl.Url = objDocumentsSettings.DefaultFolder & "a"
+                        ctlUrl.Url = objDocumentsSettings.DefaultFolder & "A"
 
                     End If
                 End If
