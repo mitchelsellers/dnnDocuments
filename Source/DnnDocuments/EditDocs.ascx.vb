@@ -19,7 +19,9 @@
 '
 
 Imports System.IO
+Imports System.Linq
 Imports System.Web
+Imports DotNetNuke.Entities.Users
 
 Namespace DotNetNuke.Modules.Documents
 
@@ -606,10 +608,9 @@ Namespace DotNetNuke.Modules.Documents
 
         Private Sub PopulateOwnerList()
             ' populate owner list
-            ''With New DotNetNuke.Entities.Users.UserController
-            lstOwner.DataSource = DotNetNuke.Entities.Users.UserController.GetUsers(PortalId, False)
+            lstOwner.DataSource = UserController.GetUsers(false, false, PortalId).Cast(Of UserInfo).OrderBy(Function(i As UserInfo) i.DisplayName)
 
-            lstOwner.DataTextField = "FullName"
+            lstOwner.DataTextField = "DisplayName"
             lstOwner.DataValueField = "UserId"
 
             lstOwner.DataBind()
