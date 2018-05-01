@@ -47,11 +47,11 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetNuke">
-      <HintPath>packages\DotNetNuke.6.0.2\lib\DotNetNuke.dll</HintPath>
+    <Reference Include="DotNetNuke, Version=7.0.0.1589, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.Core.7.0.0\lib\DotNetNuke.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationBlocks.Data">
-      <HintPath>packages\DotNetNuke.6.0.2\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNuke.Core.7.0.0\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -144,6 +144,7 @@
     <Content Include="web.config" />
     <Content Include="Providers\DataProviders\SQLDataProvider\06.00.00.SqlDataProvider" />
     <Content Include="Providers\DataProviders\SQLDataProvider\Install.06.00.00.SqlDataProvider" />
+    <None Include="packages.config" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -153,15 +154,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Document.ascx" />
-    <Content Include="Documentation\Documents_04.01.02_ReleaseNotes.txt" />
-    <Content Include="Documentation\Documents_04.01.02_TestCases.txt" />
-    <Content Include="Documentation\Documents_05.00.00_ReleaseNotes.txt" />
-    <Content Include="Documentation\Documents_05.00.00_TestCases.txt" />
     <Content Include="EditDocs.ascx" />
     <Content Include="EditDocumentsSettings.ascx" />
     <Content Include="module.css" />
     <None Include="ModuleHelp.htm" />
-    <Content Include="packages.config" />
     <None Include="Providers\DataProviders\SQLDataProvider\Uninstall.SqlDataProvider" />
   </ItemGroup>
   <ItemGroup />

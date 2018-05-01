@@ -20,6 +20,7 @@
 
 Imports System.IO
 Imports System.Web
+Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Modules.Documents.DocumentController
 Imports DotNetNuke.Services.FileSystem
 
@@ -234,8 +235,8 @@ Namespace DotNetNuke.Modules.Documents
                         End With
                     End If
 
-                    SynchronizeModule()
-                    DataCache.RemoveCache(Me.CacheKey & ";anon-doclist")
+                    ModuleController.SynchronizeModule(ModuleId)
+                    DataCache.RemoveCache("DNN_Documents;" & TabModuleId & ";anon-doclist")
                 End If
             Catch exc As Exception    'Module failed to load
                 ProcessModuleLoadException(Me, exc)

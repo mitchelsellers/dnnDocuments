@@ -21,7 +21,9 @@
 Imports System.IO
 Imports System.Linq
 Imports System.Web
+Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Entities.Users
+Imports DotNetNuke.Services.FileSystem
 
 Namespace DotNetNuke.Modules.Documents
 
@@ -238,7 +240,7 @@ Namespace DotNetNuke.Modules.Documents
                     End If
 
                     intFileId = Integer.Parse(UrlUtils.GetParameterValue(Url))
-
+                    
                     objFile = objFiles.GetFileById(intFileId, PortalId)
                     If Not objFile Is Nothing Then
                         ' Get file's folder security
@@ -399,8 +401,8 @@ Namespace DotNetNuke.Modules.Documents
                     objdocuments.DeleteDocument(Me.ModuleId, ItemID)
                 End If
 
-                SynchronizeModule()
-                DataCache.RemoveCache(Me.CacheKey & ";anon-doclist")
+                ModuleController.SynchronizeModule(ModuleId)
+                DataCache.RemoveCache("DNN_Documents;" & TabModuleId & ";anon-doclist")
 
                 ' Redirect back to the portal home page
                 Response.Redirect(NavigateURL(), True)
@@ -522,8 +524,8 @@ Namespace DotNetNuke.Modules.Documents
                     Dim objUrls As New UrlController
                     objUrls.UpdateUrl(PortalId, ctlUrl.Url, ctlUrl.UrlType, ctlUrl.Log, ctlUrl.Track, ModuleId, ctlUrl.NewWindow)
 
-                    SynchronizeModule()
-                    DataCache.RemoveCache(Me.CacheKey & ";anon-doclist")
+                    ModuleController.SynchronizeModule(ModuleId)
+                    DataCache.RemoveCache("DNN_Documents;" & TabModuleId & ";anon-doclist")
 
                     ' Redirect back to the portal home page
                     Response.Redirect(NavigateURL(), True)
@@ -618,7 +620,7 @@ Namespace DotNetNuke.Modules.Documents
             ' .GetUsers doesn't return super-users, but they can own documents
             ' so add them to the list
             Dim objSuperUser As DotNetNuke.Entities.Users.UserInfo
-            For Each objSuperUser In DotNetNuke.Entities.Users.UserController.GetUsers(Null.NullInteger, False)
+            For Each objSuperUser In UserController.GetUsers(Null.NullInteger)
                 lstOwner.Items.Insert(0, New System.Web.UI.WebControls.ListItem(objSuperUser.DisplayName, objSuperUser.UserID.ToString))
             Next
 

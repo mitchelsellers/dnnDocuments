@@ -45,7 +45,7 @@
         ]]>
       </releaseNotes>
       <dependencies>
-        <dependency type="CoreVersion">06.00.00</dependency>
+        <dependency type="CoreVersion">07.00.00</dependency>
       </dependencies>
       <components>
         <component type="Script">
