@@ -21,6 +21,7 @@ Imports DotNetNuke
 Imports System.Web.UI.WebControls
 Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Services.FileSystem
+Imports DotNetNuke.Security.Permissions
 
 Namespace DotNetNuke.Modules.Documents
 
@@ -325,12 +326,11 @@ Namespace DotNetNuke.Modules.Documents
                     If objDocument.Url.ToLower.IndexOf("fileid=") >= 0 Then
                         ' document is a file, check security\
                         Dim objFile As IFileInfo = FileManager.Instance.GetFile(Integer.Parse(objDocument.Url.Split(Char.Parse("="))(1)))
-
-                        If Not objFile Is Nothing AndAlso Not DotNetNuke.Security.PortalSecurity.IsInRoles(FileSystemUtils.GetRoles(objFile.Folder, PortalSettings.PortalId, "READ")) Then
-                            ' remove document from the list
-                            mobjDocumentList.Remove(objDocument)
+                        If Not objFile Is Nothing AndAlso Not DotNetNuke.Security.PortalSecurity.IsInRoles(FolderPermissionController.GetFolderPermissionsCollectionByFolder(PortalId, objFile.Folder).ToString("READ")) Then                            
+                                ' remove document from the list
+                                mobjDocumentList.Remove(objDocument)
+                            End If
                         End If
-                    End If
                 Next
 
                 ' Only write to the cache if the user is not logged in
