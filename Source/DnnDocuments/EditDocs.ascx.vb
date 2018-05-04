@@ -23,6 +23,7 @@ Imports System.Linq
 Imports System.Web
 Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Entities.Users
+Imports DotNetNuke.Security.Permissions
 Imports DotNetNuke.Services.FileSystem
 
 Namespace DotNetNuke.Modules.Documents
@@ -229,22 +230,24 @@ Namespace DotNetNuke.Modules.Documents
         ''' -----------------------------------------------------------------------------
         Private Function CheckFileSecurity(ByVal Url As String) As Boolean
             Dim intFileId As Integer
-            Dim objFiles As New DotNetNuke.Services.FileSystem.FileController
+
             Dim objFile As New DotNetNuke.Services.FileSystem.FileInfo
 
             Select Case GetURLType(Url)
                 Case Entities.Tabs.TabType.File
                     If Url.ToLower.StartsWith("fileid=") = False Then
                         ' to handle legacy scenarios before the introduction of the FileServerHandler
-                        Url = "FileID=" & objFiles.ConvertFilePathToFileId(Url, PortalSettings.PortalId)
+                        Url = "FileID=" & FileManager.Instance.GetFile(PortalSettings.PortalId, Url).FileId.ToString()
                     End If
 
                     intFileId = Integer.Parse(UrlUtils.GetParameterValue(Url))
-                    
-                    objFile = objFiles.GetFileById(intFileId, PortalId)
+
+                    objFile = CType(FileManager.Instance.GetFile(intFileId), Services.FileSystem.FileInfo)
                     If Not objFile Is Nothing Then
-                        ' Get file's folder security
-                        Return CheckRolesMatch(Me.ModuleConfiguration.AuthorizedViewRoles, FileSystemUtils.GetRoles(objFile.Folder, PortalId, "READ"))
+                        ' Get file's folder security                        
+                        Dim moduleRoles As ModulePermissionCollection = ModulePermissionController.GetModulePermissions(ModuleId, TabId)
+                        Dim fileRoles As FolderPermissionCollection = Security.Permissions.FolderPermissionController.GetFolderPermissionsCollectionByFolder(PortalId, objFile.Folder)
+                            Return CheckRolesMatch(moduleRoles, fileRoles)
                     End If
             End Select
             Return True
@@ -261,40 +264,41 @@ Namespace DotNetNuke.Modules.Documents
         ''' 	[ag]	11 March 2007	Created
         ''' </history>
         ''' -----------------------------------------------------------------------------
-        Private Function CheckRolesMatch(ByVal ModuleRoles As String, ByVal FileRoles As String) As Boolean
+        Private Function CheckRolesMatch(ModuleRoles As ModulePermissionCollection, FileRoles As FolderPermissionCollection) As Boolean
             Dim objFileRoles As New Hashtable
             Dim blnNotMatching As Boolean = False
             Dim strRolesForMessage As String = ""
 
-            For Each strFileRole As String In FileRoles.Split(";"c)
-                objFileRoles.Add(strFileRole, strFileRole)
-                If strFileRole = DotNetNuke.Common.Globals.glbRoleAllUsersName Then
-                    ' If read access to the file is available for "all users", the file can
-                    ' always be accessed
+            Dim fileRolesList As List(Of PermissionInfoBase) = FileRoles.ToList()
+            Dim fileReadRoles As IEnumerable(Of PermissionInfoBase) = From fileRole In fileRolesList Where fileRole.PermissionKey = "READ"
+            For Each fileRole As FolderPermissionInfo In fileReadRoles
+                objFileRoles.Add(fileRole.RoleName, fileRole.RoleName)
+                If fileRole.RoleName = DotNetNuke.Common.Globals.glbRoleAllUsersName Then
                     Return True
                 End If
             Next
 
-            For Each strModuleRole As String In ModuleRoles.Split(";"c)
-                If Not objFileRoles.ContainsKey(strModuleRole) Then
+            Dim moduleRolesList As List(Of PermissionInfoBase) = ModuleRoles.ToList()
+            Dim moduleReadRoles As IEnumerable(Of PermissionInfoBase) = From moduleRole In moduleRolesList Where moduleRole.PermissionKey = "READ"
+            For Each moduleRole As ModulePermissionInfo In moduleReadRoles
+                If moduleRole.PermissionKey = "READ" AndAlso Not objFileRoles.ContainsKey(moduleRole.RoleName) Then
                     ' A view role exists for the module that is not available for the file
                     blnNotMatching = True
                     If strRolesForMessage <> String.Empty Then
                         strRolesForMessage = strRolesForMessage & ", "
                     End If
-                    strRolesForMessage = strRolesForMessage & strModuleRole
+                    strRolesForMessage = strRolesForMessage & moduleRole.RoleName
                 End If
             Next
-
             If blnNotMatching Then
                 ' Warn user that roles do not match
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me, _
-                  DotNetNuke.Services.Localization.Localization.GetString("msgFileSecurityWarning.Text", Me.LocalResourceFile).Replace("[$ROLELIST]", IIf(strRolesForMessage.IndexOf(",") >= 0, "s", "").ToString & "'" & strRolesForMessage & "'"), _
-                  DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
+                    DotNetNuke.Services.Localization.Localization.GetString("msgFileSecurityWarning.Text", Me.LocalResourceFile).Replace("[$ROLELIST]", IIf(strRolesForMessage.IndexOf(",") >= 0, "s", "").ToString & "'" & strRolesForMessage & "'"), _
+                    DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
                 Return False
             Else
                 Return True
-            End If
+            End If           
         End Function
 
         ''' -----------------------------------------------------------------------------
@@ -308,8 +312,7 @@ Namespace DotNetNuke.Modules.Documents
         ''' </history>
         ''' -----------------------------------------------------------------------------
         Private Function CheckFileExists(ByVal Url As String) As Boolean
-            Dim intFileId As Integer
-            Dim objFiles As New DotNetNuke.Services.FileSystem.FileController
+            Dim intFileId As Integer            
             Dim objFile As New DotNetNuke.Services.FileSystem.FileInfo
             Dim blnAddWarning As Boolean
 
@@ -324,12 +327,12 @@ Namespace DotNetNuke.Modules.Documents
                     Case Entities.Tabs.TabType.File
                         If Url.ToLower.StartsWith("fileid=") = False Then
                             ' to handle legacy scenarios before the introduction of the FileServerHandler
-                            Url = "FileID=" & objFiles.ConvertFilePathToFileId(Url, PortalSettings.PortalId)
+                            Url = "FileID=" & FileManager.Instance.GetFile(PortalSettings.PortalId, Url).FileId
                         End If
 
                         intFileId = Integer.Parse(UrlUtils.GetParameterValue(Url))
 
-                        objFile = objFiles.GetFileById(intFileId, PortalId)
+                        objFile = CType(FileManager.Instance.GetFile(intFileId), Services.FileSystem.FileInfo)
 
                         blnAddWarning = False
                         If objFile Is Nothing Then
@@ -473,11 +476,11 @@ Namespace DotNetNuke.Modules.Documents
                         objDocument.ItemId = ItemID
                         objDocument.ModuleId = ModuleId
 
-                        objDocument.CreatedByUserID = UserInfo.UserID
+                        objDocument.CreatedByUserId = UserInfo.UserID
 
                         ' Default ownerid value for new documents is current user, may be changed
                         ' by the value of the dropdown list (below)
-                        objDocument.OwnedByUserID = UserId
+                        objDocument.OwnedByUserId = UserId
                     End If
 
                     objDocument.Title = txtName.Text
@@ -488,9 +491,9 @@ Namespace DotNetNuke.Modules.Documents
 
                     If lstOwner.Visible Then
                         If lstOwner.SelectedValue <> String.Empty Then
-                            objDocument.OwnedByUserID = Convert.ToInt32(lstOwner.SelectedValue)
+                            objDocument.OwnedByUserId = Convert.ToInt32(lstOwner.SelectedValue)
                         Else
-                            objDocument.OwnedByUserID = -1
+                            objDocument.OwnedByUserId = -1
                         End If
                     Else
                         ' User never clicked "change", leave ownedbyuserid as is
@@ -511,7 +514,7 @@ Namespace DotNetNuke.Modules.Documents
                     Else
                         objDocument.SortOrderIndex = Convert.ToInt32(txtSortIndex.Text)
                     End If
-                    
+
                     ' Create an instance of the Document DB component
 
                     If Common.Utilities.Null.IsNull(ItemID) Then
@@ -597,7 +600,7 @@ Namespace DotNetNuke.Modules.Documents
                     If objDocument Is Nothing Then
                         lstOwner.SelectedValue = DotNetNuke.Entities.Users.UserController.GetCurrentUserInfo.UserID.ToString
                     Else
-                        lstOwner.SelectedValue = objDocument.OwnedByUserID.ToString
+                        lstOwner.SelectedValue = objDocument.OwnedByUserId.ToString
                     End If
                 Catch exc As Exception
                     ' suppress error selecting owner user
@@ -610,7 +613,7 @@ Namespace DotNetNuke.Modules.Documents
 
         Private Sub PopulateOwnerList()
             ' populate owner list
-            lstOwner.DataSource = UserController.GetUsers(false, false, PortalId).Cast(Of UserInfo).OrderBy(Function(i As UserInfo) i.DisplayName)
+            lstOwner.DataSource = UserController.GetUsers(False, False, PortalId).Cast(Of UserInfo).OrderBy(Function(i As UserInfo) i.DisplayName)
 
             lstOwner.DataTextField = "DisplayName"
             lstOwner.DataValueField = "UserId"
