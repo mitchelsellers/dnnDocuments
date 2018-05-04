@@ -163,3 +163,99 @@ VALUES (
 SELECT SCOPE_IDENTITY()
 GO
 
+--Discrepancy fix for upgrades prior to version 06.00.00
+IF (SELECT COLUMNPROPERTY( OBJECT_ID('{databaseOwner}{objectQualifier}DocumentsSettings'),'AllowUserSort','AllowsNull')) IS NULL 
+	ALTER TABLE {databaseOwner}{objectQualifier}DocumentsSettings 
+		DefaultFolder NVARCHAR(2000) NULL,
+		CategoriesListName NVARCHAR(50) NULL,
+		ADD AllowUserSort BIT NULL
+GO
+
+--Ensure all procedures the same
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}AddDocumentsSettings]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}[{objectQualifier}AddDocumentsSettings]
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}UpdateDocumentsSettings]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}[{objectQualifier}UpdateDocumentsSettings]
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}DeleteDocumentsSettings]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}[{objectQualifier}DeleteDocumentsSettings]
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}GetDocumentsSettings]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}[{objectQualifier}GetDocumentsSettings]
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}AddDocumentsSettings]
+	@ModuleId          INT,
+	@ShowTitleLink     BIT,
+	@SortOrder         NVARCHAR(2000),
+	@DisplayColumns    NVARCHAR(2000),
+	@UseCategoriesList BIT,
+	@DefaultFolder     NVARCHAR(2000),
+	@CategoriesListName NVARCHAR(50),
+	@AllowUserSort     BIT
+
+AS
+INSERT INTO {databaseOwner}[{objectQualifier}DocumentsSettings] (
+  ModuleId,
+  ShowTitleLink,
+  SortOrder,    
+  DisplayColumns,
+  UseCategoriesList,
+  DefaultFolder,
+  CategoriesListName,
+  AllowUserSort
+)
+VALUES (
+  @ModuleId,
+  @ShowTitleLink,
+  @SortOrder,    
+  @DisplayColumns,
+  @UseCategoriesList,
+  @DefaultFolder,
+  @CategoriesListName,
+  @AllowUserSort
+)
+SELECT @ModuleId
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}UpdateDocumentsSettings
+	@ModuleId          INT,
+	@ShowTitleLink     BIT,
+	@SortOrder         NVARCHAR(2000),
+	@DisplayColumns    NVARCHAR(2000),
+	@UseCategoriesList BIT,
+	@DefaultFolder     NVARCHAR(2000),
+	@CategoriesListName NVARCHAR(50),
+	@AllowUserSort     BIT
+
+AS
+UPDATE {databaseOwner}{objectQualifier}DocumentsSettings
+SET    ShowTitleLink=@ShowTitleLink,
+       SortOrder=@SortOrder,    
+       DisplayColumns=@DisplayColumns,
+       UseCategoriesList=@UseCategoriesList,
+       DefaultFolder=@DefaultFolder,
+       CategoriesListName=@CategoriesListName,
+       AllowUserSort=@AllowUserSort
+WHERE  ModuleId = @ModuleId
+GO
+
+CREATE  PROCEDURE {databaseOwner}[{objectQualifier}DeleteDocumentsSettings]
+	@ModuleId INT
+AS
+DELETE
+FROM {objectQualifier}DocumentsSettings
+WHERE  ModuleId = @ModuleId
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}GetDocumentsSettings]
+	@ModuleId INT
+AS
+SELECT *
+FROM {objectQualifier}DocumentsSettings
+WHERE  ModuleId = @ModuleId
+GO

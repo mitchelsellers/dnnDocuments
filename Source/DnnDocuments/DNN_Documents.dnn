@@ -1,6 +1,6 @@
 <dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="DNN_Documents" type="Module" version="06.02.05">
+    <package name="DNN_Documents" type="Module" version="07.00.00">
       <friendlyName>Documents</friendlyName>
       <description>This module renders a list of documents, including links to browse or download the document. 
         Documents includes an edit page, which allows authorized users to edit the information about the Documents 
@@ -33,6 +33,9 @@
       </license>
       <releaseNotes>
         <![CDATA[ 
+        <h3>Version 07.00.00</h3>
+        <p>This version was released to establish support for DNN 9.2.0 and later. Minimum version of DNN upgraded to require 7.0.0 or later.</p>
+        
         <h3>Version 06.02.05</h3>
         <p>This version is the 6.2.0 version compiled to run on .NET 4.0!</p>
         
@@ -78,6 +81,8 @@
           </resourceFiles>
         </component>
 
+        <component type="Cleanup" version="06.00.00" fileName="06.00.00.txt" />
+        
         <component type="Module">
           <desktopModule>
             <moduleName>DNN_Documents</moduleName>

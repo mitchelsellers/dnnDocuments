@@ -123,7 +123,7 @@
     <Compile Include="Providers\DataProviders\SQLDataProvider\SqlDataProvider.vb" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="04.01.02.txt" />
+    <Content Include="06.00.00.txt" />
     <Content Include="App_LocalResources\Document.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
